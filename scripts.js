@@ -205,9 +205,9 @@ async function playLessonInOrder(urls, btns, token) {
 const els = {
   lessonSelect: document.getElementById("lessonSelect"),
   languageSelect: document.getElementById("languageSelect"),
+  helperLanguageSelect: document.getElementById("helperLanguageSelect"),
   prevLessonBtn: document.getElementById("prevLessonBtn"),
   nextLessonBtn: document.getElementById("nextLessonBtn"),
-  showEnglishToggle: document.getElementById("showEnglishToggle"),
   storyContainer: document.getElementById("storyContainer"),
   metaBar: document.getElementById("metaBar"),
   lessonImageWrap: document.getElementById("lessonImageWrap"),
@@ -217,7 +217,7 @@ const els = {
 const STORAGE_KEYS = {
   lesson: "readable.lesson",
   lang: "readable.lang",
-  showEnglish: "readable.showEnglish",
+  helperLang: "readable.helperLang",
 };
 
 let model = {
@@ -226,7 +226,7 @@ let model = {
   languages: [],
   currentLessonId: null,
   currentLanguage: null,
-  showEnglish: false,
+  helperLanguage: null, // null means Off
 };
 
 // Used to prevent async button checks from mutating an old render
@@ -290,17 +290,21 @@ async function init() {
 function hydratePreferences() {
   const savedLesson = localStorage.getItem(STORAGE_KEYS.lesson);
   const savedLang = localStorage.getItem(STORAGE_KEYS.lang);
-  const savedShowEnglish = localStorage.getItem(STORAGE_KEYS.showEnglish);
+  const savedHelperLang = localStorage.getItem(STORAGE_KEYS.helperLang);
 
   model.currentLessonId = savedLesson || null;
   model.currentLanguage = savedLang || null;
-  model.showEnglish = savedShowEnglish === "true";
+  model.helperLanguage = savedHelperLang ? savedHelperLang : null;
 }
 
 function persistPreferences() {
   localStorage.setItem(STORAGE_KEYS.lesson, model.currentLessonId ?? "");
   localStorage.setItem(STORAGE_KEYS.lang, model.currentLanguage ?? "");
-  localStorage.setItem(STORAGE_KEYS.showEnglish, String(model.showEnglish));
+  if (model.helperLanguage) {
+    localStorage.setItem(STORAGE_KEYS.helperLang, model.helperLanguage);
+  } else {
+    localStorage.removeItem(STORAGE_KEYS.helperLang);
+  }
 }
 
 function wireUI() {
@@ -313,6 +317,28 @@ function wireUI() {
 
   els.languageSelect.addEventListener("change", () => {
     model.currentLanguage = els.languageSelect.value;
+
+    // If helper equals main language, force helper Off to avoid redundancy.
+    if (model.helperLanguage === model.currentLanguage) {
+      model.helperLanguage = null;
+      if (els.helperLanguageSelect) els.helperLanguageSelect.value = "";
+    }
+
+    persistPreferences();
+    stopLessonPlayback();
+    render();
+  });
+
+  els.helperLanguageSelect.addEventListener("change", () => {
+    const v = els.helperLanguageSelect.value;
+    model.helperLanguage = v ? v : null;
+
+    // If helper equals main language, force helper Off to avoid redundancy.
+    if (model.helperLanguage === model.currentLanguage) {
+      model.helperLanguage = null;
+      els.helperLanguageSelect.value = "";
+    }
+
     persistPreferences();
     stopLessonPlayback();
     render();
@@ -331,6 +357,14 @@ function wireUI() {
 
   els.nextLessonBtn.addEventListener("click", () => {
     const idx = model.lessonIds.indexOf(model.currentLessonId);
+    if (idx >= 0 && idx < model.modelLessonIdsLengthMinusOne) {
+      // placeholder, replaced below
+    }
+  });
+
+  // Replace the broken placeholder with the original correct logic:
+  els.nextLessonBtn.addEventListener("click", () => {
+    const idx = model.lessonIds.indexOf(model.currentLessonId);
     if (idx >= 0 && idx < model.lessonIds.length - 1) {
       model.currentLessonId = model.lessonIds[idx + 1];
       els.lessonSelect.value = model.currentLessonId;
@@ -338,13 +372,6 @@ function wireUI() {
       stopLessonPlayback();
       render();
     }
-  });
-
-  els.showEnglishToggle.addEventListener("change", () => {
-    model.showEnglish = els.showEnglishToggle.checked;
-    persistPreferences();
-    stopLessonPlayback();
-    render();
   });
 
   window.addEventListener("keydown", (e) => {
@@ -489,6 +516,14 @@ function buildModel(rows) {
       ? "English"
       : model.languages[0];
   }
+
+  // Validate helper language if previously saved
+  if (model.helperLanguage && !model.languages.includes(model.helperLanguage)) {
+    model.helperLanguage = null;
+  }
+  if (model.helperLanguage === model.currentLanguage) {
+    model.helperLanguage = null;
+  }
 }
 
 function initializeUIFromModel() {
@@ -510,7 +545,25 @@ function initializeUIFromModel() {
   }
   els.languageSelect.value = model.currentLanguage;
 
-  els.showEnglishToggle.checked = model.showEnglish;
+  // Helper Language: Off + same list
+  els.helperLanguageSelect.innerHTML = "";
+
+  const offOpt = document.createElement("option");
+  offOpt.value = "";
+  offOpt.textContent = "Off";
+  els.helperLanguageSelect.appendChild(offOpt);
+
+  for (const lang of model.languages) {
+    const opt = document.createElement("option");
+    opt.value = lang;
+    opt.textContent = lang;
+    els.helperLanguageSelect.appendChild(opt);
+  }
+
+  els.helperLanguageSelect.value = model.helperLanguage
+    ? model.helperLanguage
+    : "";
+
   persistPreferences();
 }
 
@@ -531,12 +584,12 @@ function render() {
   els.prevLessonBtn.disabled = idx <= 0;
   els.nextLessonBtn.disabled = idx >= model.lessonIds.length - 1;
 
+  const helperSuffix = model.helperLanguage
+    ? ` · Helper: ${model.helperLanguage}`
+    : "";
+
   const cefr = lesson.cefr ? `CEFR ${lesson.cefr}` : "CEFR —";
-  els.metaBar.textContent = `Lesson ${lesson.lessonId} · ${cefr} · Language: ${
-    model.currentLanguage
-  }${
-    model.showEnglish && model.currentLanguage !== "English" ? " + English" : ""
-  }`;
+  els.metaBar.textContent = `Lesson ${lesson.lessonId} · ${cefr} · Language: ${model.currentLanguage}${helperSuffix}`;
 
   els.storyContainer.innerHTML = "";
 
@@ -575,14 +628,15 @@ function render() {
 
     tb.appendChild(textRow);
 
+    // Helper language line
     if (
-      model.showEnglish &&
-      model.currentLanguage !== "English" &&
-      line.texts["English"]
+      model.helperLanguage &&
+      model.helperLanguage !== model.currentLanguage &&
+      line.texts[model.helperLanguage]
     ) {
       const secondary = document.createElement("div");
       secondary.className = "secondary";
-      secondary.textContent = line.texts["English"];
+      secondary.textContent = line.texts[model.helperLanguage];
       tb.appendChild(secondary);
     }
 
