@@ -326,10 +326,7 @@ select:focus-visible {
 
 /* Lines: remove rounded rectangles; use dashed separators */
 .line {
-  display: grid;
-  grid-template-columns: 44px 1fr;
-  gap: 14px;
-  align-items: start;
+  display: block;
   padding: 10px 0;
   border: none;
   background: transparent;
