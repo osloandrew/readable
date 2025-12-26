@@ -20,6 +20,8 @@ const AUDIO_EXT = "m4a";
 const IMAGES_DIR = "Images";
 const IMAGE_EXT = "png";
 
+const RTL_LANGS = new Set(["Hebrew", "Arabic"]);
+
 // Keep only one audio playing at a time
 let currentlyPlaying = { audio: null, btn: null };
 
@@ -624,6 +626,9 @@ function render() {
     const primary = document.createElement("div");
     primary.className = "primary";
     primary.textContent = sentence;
+    if (RTL_LANGS.has(model.currentLanguage)) {
+      primary.classList.add("rtl");
+    }
     textRow.appendChild(primary);
 
     tb.appendChild(textRow);
@@ -637,6 +642,9 @@ function render() {
       const secondary = document.createElement("div");
       secondary.className = "secondary";
       secondary.textContent = line.texts[model.helperLanguage];
+      if (RTL_LANGS.has(model.helperLanguage)) {
+        secondary.classList.add("rtl");
+      }
       tb.appendChild(secondary);
     }
 

@@ -312,11 +312,6 @@ select:focus-visible {
   gap: 12px;
 }
 
-.textrow .primary {
-  flex: 1;
-  min-width: 0;
-}
-
 /* Story (default) */
 .story {
   padding: 18px 16px 20px;
@@ -340,11 +335,11 @@ select:focus-visible {
   padding-top: 16px;
 }
 
-.lineno {
-  font-family: var(--mono);
-  color: var(--muted2);
-  font-size: 11.5px;
-  padding-top: 3px;
+/* RTL helpers */
+.rtl {
+  align-self: flex-start;
+  direction: rtl;
+  unicode-bidi: plaintext; /* good mixed-script behavior */
   text-align: right;
 }
 
