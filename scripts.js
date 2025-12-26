@@ -208,7 +208,6 @@ const els = {
   prevLessonBtn: document.getElementById("prevLessonBtn"),
   nextLessonBtn: document.getElementById("nextLessonBtn"),
   showEnglishToggle: document.getElementById("showEnglishToggle"),
-  showLineNumbersToggle: document.getElementById("showLineNumbersToggle"),
   storyContainer: document.getElementById("storyContainer"),
   metaBar: document.getElementById("metaBar"),
   lessonImageWrap: document.getElementById("lessonImageWrap"),
@@ -219,7 +218,6 @@ const STORAGE_KEYS = {
   lesson: "readable.lesson",
   lang: "readable.lang",
   showEnglish: "readable.showEnglish",
-  showLineNumbers: "readable.showLineNumbers",
 };
 
 let model = {
@@ -229,7 +227,6 @@ let model = {
   currentLessonId: null,
   currentLanguage: null,
   showEnglish: false,
-  showLineNumbers: false,
 };
 
 // Used to prevent async button checks from mutating an old render
@@ -294,24 +291,16 @@ function hydratePreferences() {
   const savedLesson = localStorage.getItem(STORAGE_KEYS.lesson);
   const savedLang = localStorage.getItem(STORAGE_KEYS.lang);
   const savedShowEnglish = localStorage.getItem(STORAGE_KEYS.showEnglish);
-  const savedShowLineNumbers = localStorage.getItem(
-    STORAGE_KEYS.showLineNumbers
-  );
 
   model.currentLessonId = savedLesson || null;
   model.currentLanguage = savedLang || null;
   model.showEnglish = savedShowEnglish === "true";
-  model.showLineNumbers = savedShowLineNumbers === "true";
 }
 
 function persistPreferences() {
   localStorage.setItem(STORAGE_KEYS.lesson, model.currentLessonId ?? "");
   localStorage.setItem(STORAGE_KEYS.lang, model.currentLanguage ?? "");
   localStorage.setItem(STORAGE_KEYS.showEnglish, String(model.showEnglish));
-  localStorage.setItem(
-    STORAGE_KEYS.showLineNumbers,
-    String(model.showLineNumbers)
-  );
 }
 
 function wireUI() {
@@ -353,13 +342,6 @@ function wireUI() {
 
   els.showEnglishToggle.addEventListener("change", () => {
     model.showEnglish = els.showEnglishToggle.checked;
-    persistPreferences();
-    stopLessonPlayback();
-    render();
-  });
-
-  els.showLineNumbersToggle.addEventListener("change", () => {
-    model.showLineNumbers = els.showLineNumbersToggle.checked;
     persistPreferences();
     stopLessonPlayback();
     render();
@@ -529,8 +511,6 @@ function initializeUIFromModel() {
   els.languageSelect.value = model.currentLanguage;
 
   els.showEnglishToggle.checked = model.showEnglish;
-  els.showLineNumbersToggle.checked = model.showLineNumbers;
-
   persistPreferences();
 }
 
@@ -573,13 +553,6 @@ function render() {
   lesson.lines.forEach((line, i) => {
     const lineEl = document.createElement("div");
     lineEl.className = "line";
-
-    const noEl = document.createElement("div");
-    noEl.className = "lineno";
-    noEl.textContent = model.showLineNumbers
-      ? String(line.lineNo).padStart(2, "0")
-      : "";
-    lineEl.appendChild(noEl);
 
     const tb = document.createElement("div");
     tb.className = "textblock";

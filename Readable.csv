@@ -1,21 +1,31 @@
-Lesson,Line,CEFR,Croatian,English,French,German,Hebrew,Italian,Japanese,Norwegian,Spanish
-1,1,A1,Jutro je.,It's morning.,C’est le matin.,Es ist Morgen.,זה בוקר.,È mattina.,朝です。,Det er morgen.,Es por la mañana.
-1,2,A1,Soba je mračna.,The room is dark.,La pièce est sombre.,Das Zimmer ist dunkel.,החדר חשוך.,La stanza è buia.,部屋は暗いです。,Rommet er mørkt.,La habitación está oscura.
-1,3,A1,Budilica zvoni.,The alarm clock rings.,Le réveil sonne.,Der Wecker klingelt.,השעון המעורר מצלצל.,La sveglia suona.,目覚まし時計が鳴ります。,Vekkerklokken ringer.,El despertador suena.
-1,4,A1,Otvaram oči.,I open my eyes.,J’ouvre les yeux.,Ich öffne die Augen.,אני פותח את העיניים.,Apro gli occhi.,目を開けます。,Jeg åpner øynene mine.,Abro los ojos.
-1,5,A1,Svjetlo je ugašeno.,The light is off.,La lumière est éteinte.,Das Licht ist aus.,האור כבוי.,La luce è spenta.,電気は消えています。,Lyset er av.,La luz está apagada.
-1,6,A1,Ustajem.,I get up.,Je me lève.,Ich stehe auf.,אני קם.,Mi alzo.,起きます。,Jeg står opp.,Me levanto.
-1,7,A1,Soba je još mračna.,The room is still dark.,La pièce est toujours sombre.,Das Zimmer ist immer noch dunkel.,החדר עדיין חשוך.,La stanza è ancora buia.,部屋はまだ暗いです。,Rommet er fortsatt mørkt.,La habitación sigue oscura.
-1,8,A1,Palim svjetlo.,I turn on the light.,J’allume la lumière.,Ich mache das Licht an.,אני מדליק את האור.,Accendo la luce.,電気をつけます。,Jeg slår på lyset.,Enciendo la luz.
-1,9,A1,Soba je svijetla.,The room is bright.,La pièce est lumineuse.,Das Zimmer ist hell.,החדר מואר.,La stanza è luminosa.,部屋は明るいです。,Rommet er lyst.,La habitación está luminosa.
-1,10,A1,Dan počinje.,The day starts.,La journée commence.,Der Tag beginnt.,היום מתחיל.,La giornata comincia.,一日が始まります。,Dagen starter.,Empieza el día.
-2,1,A1,Idem u kupaonicu.,I go to the bathroom.,Je vais à la salle de bain.,Ich gehe ins Bad.,אני הולך לחדר האמבטיה.,Vado in bagno.,トイレに行きます。,Jeg går på badet.,Voy al baño.
-2,2,A1,Soba je svijetla.,The room is bright.,La pièce est lumineuse.,Das Zimmer ist hell.,החדר מואר.,La stanza è luminosa.,部屋は明るいです。,Rommet er lyst.,La habitación está luminosa.
-2,3,A1,Ima umivaonik.,There's a sink.,Il y a un lavabo.,Es gibt ein Waschbecken.,יש כיור.,C’è un lavandino.,洗面台があります。,Det er en vask.,Hay un lavabo.
-2,4,A1,Puštam vodu.,I turn on the water.,J’ouvre l’eau.,Ich drehe das Wasser auf.,אני פותח את המים.,Apro l’acqua.,水を出します。,Jeg skrur på vannet.,Abro el agua.
-2,5,A1,Voda je hladna.,The water is cold.,L’eau est froide.,Das Wasser ist kalt.,המים קרים.,L’acqua è fredda.,水は冷たいです。,Vannet er kaldt.,El agua está fría.
-2,6,A1,Čekam.,I wait.,J’attends.,Ich warte.,אני מחכה.,Aspetto.,待ちます。,Jeg venter.,Espero.
-2,7,A1,Voda je još uvijek hladna.,The water is still cold.,L’eau est toujours froide.,Das Wasser ist immer noch kalt.,המים עדיין קרים.,L’acqua è ancora fredda.,水はまだ冷たいです。,Vannet er fortsatt kaldt.,El agua sigue fría.
-2,8,A1,Puštam toplu vodu.,I turn on the hot water.,J’ouvre l’eau chaude.,Ich drehe das warme Wasser auf.,אני פותח את המים החמים.,Apro l’acqua calda.,お湯を出します。,Jeg skrur på varmtvannet.,Abro el agua caliente.
-2,9,A1,Voda je topla.,The water is warm.,L’eau est tiède.,Das Wasser ist warm.,המים חמימים.,L’acqua è tiepida.,水は温かいです。,Vannet er varmt.,El agua está templada.
-2,10,A1,Perem zube.,I brush my teeth.,Je me brosse les dents.,Ich putze mir die Zähne.,אני מצחצח שיניים.,Mi lavo i denti.,歯を磨きます。,Jeg pusser tennene.,Me cepillo los dientes.
+Lesson,Line,CEFR,Chinese,Croatian,English,French,German,Hebrew,Italian,Japanese,Norwegian,Spanish
+1,1,A1,早上了。,Jutro je.,It's morning.,C’est le matin.,Es ist Morgen.,זה בוקר.,È mattina.,朝です。,Det er morgen.,Es por la mañana.
+1,2,A1,房间很暗。,Soba je mračna.,The room is dark.,La pièce est sombre.,Das Zimmer ist dunkel.,החדר חשוך.,La stanza è buia.,部屋は暗いです。,Rommet er mørkt.,La habitación está oscura.
+1,3,A1,闹钟响了。,Budilica zvoni.,The alarm clock rings.,Le réveil sonne.,Der Wecker klingelt.,השעון המעורר מצלצל.,La sveglia suona.,目覚まし時計が鳴ります。,Vekkerklokken ringer.,El despertador suena.
+1,4,A1,我睁开眼睛。,Otvaram oči.,I open my eyes.,J’ouvre les yeux.,Ich öffne die Augen.,אני פותח את העיניים.,Apro gli occhi.,目を開けます。,Jeg åpner øynene mine.,Abro los ojos.
+1,5,A1,灯是关着的。,Svjetlo je ugašeno.,The light is off.,La lumière est éteinte.,Das Licht ist aus.,האור כבוי.,La luce è spenta.,電気は消えています。,Lyset er av.,La luz está apagada.
+1,6,A1,我起床了。,Ustajem.,I get up.,Je me lève.,Ich stehe auf.,אני קם.,Mi alzo.,起きます。,Jeg står opp.,Me levanto.
+1,7,A1,房间还是很暗。,Soba je još mračna.,The room is still dark.,La pièce est toujours sombre.,Das Zimmer ist immer noch dunkel.,החדר עדיין חשוך.,La stanza è ancora buia.,部屋はまだ暗いです。,Rommet er fortsatt mørkt.,La habitación sigue oscura.
+1,8,A1,我打开灯。,Palim svjetlo.,I turn on the light.,J’allume la lumière.,Ich mache das Licht an.,אני מדליק את האור.,Accendo la luce.,電気をつけます。,Jeg slår på lyset.,Enciendo la luz.
+1,9,A1,房间很亮。,Soba je svijetla.,The room is bright.,La pièce est lumineuse.,Das Zimmer ist hell.,החדר מואר.,La stanza è luminosa.,部屋は明るいです。,Rommet er lyst.,La habitación está luminosa.
+1,10,A1,一天开始了。,Dan počinje.,The day starts.,La journée commence.,Der Tag beginnt.,היום מתחיל.,La giornata comincia.,一日が始まります。,Dagen starter.,Empieza el día.
+2,1,A1,我去洗手间。,Idem u kupaonicu.,I go to the bathroom.,Je vais à la salle de bain.,Ich gehe ins Bad.,אני הולך לחדר האמבטיה.,Vado in bagno.,トイレに行きます。,Jeg går på badet.,Voy al baño.
+2,2,A1,房间很亮。,Soba je svijetla.,The room is bright.,La pièce est lumineuse.,Das Zimmer ist hell.,החדר מואר.,La stanza è luminosa.,部屋は明るいです。,Rommet er lyst.,La habitación está luminosa.
+2,3,A1,那里有一个洗手池。,Ima umivaonik.,There's a sink.,Il y a un lavabo.,Es gibt ein Waschbecken.,יש כיור.,C’è un lavandino.,洗面台があります。,Det er en vask.,Hay un lavabo.
+2,4,A1,我打开水。,Puštam vodu.,I turn on the water.,J’ouvre l’eau.,Ich drehe das Wasser auf.,אני פותח את המים.,Apro l’acqua.,水を出します。,Jeg skrur på vannet.,Abro el agua.
+2,5,A1,水是冷的。,Voda je hladna.,The water is cold.,L’eau est froide.,Das Wasser ist kalt.,המים קרים.,L’acqua è fredda.,水は冷たいです。,Vannet er kaldt.,El agua está fría.
+2,6,A1,我等一会儿。,Čekam.,I wait.,J’attends.,Ich warte.,אני מחכה.,Aspetto.,待ちます。,Jeg venter.,Espero.
+2,7,A1,水还是冷的。,Voda je još uvijek hladna.,The water is still cold.,L’eau est toujours froide.,Das Wasser ist immer noch kalt.,המים עדיין קרים.,L’acqua è ancora fredda.,水はまだ冷たいです。,Vannet er fortsatt kaldt.,El agua sigue fría.
+2,8,A1,我打开热水。,Puštam toplu vodu.,I turn on the hot water.,J’ouvre l’eau chaude.,Ich drehe das warme Wasser auf.,אני פותח את המים החמים.,Apro l’acqua calda.,お湯を出します。,Jeg skrur på varmtvannet.,Abro el agua caliente.
+2,9,A1,水是温的。,Voda je topla.,The water is warm.,L’eau est tiède.,Das Wasser ist warm.,המים חמימים.,L’acqua è tiepida.,水は温かいです。,Vannet er varmt.,El agua está templada.
+2,10,A1,我刷牙。,Perem zube.,I brush my teeth.,Je me brosse les dents.,Ich putze mir die Zähne.,אני מצחצח שיניים.,Mi lavo i denti.,歯を磨きます。,Jeg pusser tennene.,Me cepillo los dientes.
+3,1,A1,我去卧室。,,I go to the bedroom.,,,,,,Jeg går til soverommet.,
+3,2,A1,房间很亮。,,The room is bright.,,,,,,Rommet er lyst.,
+3,3,A1,我的衣服在椅子上。,,My clothes are on the chair.,,,,,,Klærne mine er på stolen.,
+3,4,A1,我穿上一件衬衫。,,I put on a shirt.,,,,,,Jeg tar på meg en skjorte.,
+3,5,A1,衬衫是干净的。,,The shirt is clean.,,,,,,Skjorten er ren.,
+3,6,A1,我穿上裤子。,,I put on pants.,,,,,,Jeg tar på meg bukser.,
+3,7,A1,裤子很暖和。,,The pants are warm.,,,,,,Buksene er varme.,
+3,8,A1,我穿上袜子。,,I put on socks.,,,,,,Jeg tar på meg sokker.,
+3,9,A1,我穿上鞋子。,,I put on shoes.,,,,,,Jeg tar på meg sko.,
+3,10,A1,我准备好了。,,I am ready.,,,,,,Jeg er klar.,
