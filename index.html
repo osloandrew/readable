@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Readable Stories</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="header">
+        <div class="title-block">
+          <h1 class="title">Readable</h1>
+          <p class="subtitle">
+            Read lessons in order. Switch languages instantly.
+          </p>
+        </div>
+
+        <div class="controls">
+          <div class="control">
+            <label for="lessonSelect">Lesson</label>
+            <div class="row">
+              <button
+                id="prevLessonBtn"
+                class="btn"
+                type="button"
+                aria-label="Previous lesson"
+              >
+                Prev
+              </button>
+              <select id="lessonSelect"></select>
+              <button
+                id="nextLessonBtn"
+                class="btn"
+                type="button"
+                aria-label="Next lesson"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+
+          <div class="control">
+            <label for="languageSelect">Language</label>
+            <select id="languageSelect"></select>
+          </div>
+
+          <div class="control checks">
+            <label class="checkbox">
+              <input id="showEnglishToggle" type="checkbox" />
+              <span>Show English</span>
+            </label>
+
+            <label class="checkbox">
+              <input id="showLineNumbersToggle" type="checkbox" />
+              <span>Line numbers</span>
+            </label>
+          </div>
+        </div>
+      </header>
+
+      <main class="main">
+        <section class="meta" id="metaBar" aria-live="polite"></section>
+
+        <section
+          class="lesson-image"
+          id="lessonImageWrap"
+          aria-label="Lesson image"
+        >
+          <img id="lessonImage" alt="" loading="lazy" />
+        </section>
+
+        <section class="story" id="storyContainer" aria-label="Story lines">
+          <!-- rendered lines -->
+        </section>
+
+        <footer class="footer">
+          <span class="hint">
+            Note: if this is opened as a file (file://), the CSV fetch may be
+            blocked. Run a local server instead (instructions in README comment
+            in scripts.js).
+          </span>
+        </footer>
+      </main>
+    </div>
+
+    <script src="scripts.js"></script>
+  </body>
+</html>
