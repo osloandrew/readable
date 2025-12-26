@@ -25,12 +25,18 @@
 
   /* Reading */
   --reading-width: 70ch;
-  --control-h: 38px; /* slightly smaller */
+  --control-h: 38px;
   --focus-ring: 3px;
 
-  /* New: image + header emphasis control */
-  --header-shadow: 0 4px 10px rgba(17, 24, 39, 0.06);
-  --image-max: 640px;
+  /* Emphasis control */
+  --toolbar-bg: rgba(255, 255, 255, 0.6);
+  --toolbar-shadow: 0 3px 10px rgba(17, 24, 39, 0.06);
+
+  /* Updated: image + separators + type scale */
+  --image-max: 420px; /* bigger */
+  --image-col: minmax(300px, 420px);
+  --text-col: minmax(520px, 1fr);
+  --dash: rgba(17, 24, 39, 0.22); /* gray dashes */
 }
 
 * {
@@ -45,7 +51,11 @@ body {
   margin: 0;
   font-family: var(--sans);
   color: var(--ink);
-  background: radial-gradient(1200px 900px at 20% 0%, #ffffff 0%, var(--page) 55%),
+  background: radial-gradient(
+      1200px 900px at 20% 0%,
+      #ffffff 0%,
+      var(--page) 55%
+    ),
     radial-gradient(900px 700px at 90% 10%, #ffffff 0%, var(--page) 60%);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -54,19 +64,18 @@ body {
 .app {
   max-width: 1020px;
   margin: 0 auto;
-  padding: 18px 18px 28px; /* slightly less top padding */
+  padding: 18px 18px 28px;
 }
 
-/* Header (make it feel like a small masthead, not a hero card) */
+/* Header: quiet masthead */
 .header {
-  background: transparent;              /* de-emphasize */
-  border: none;                         /* remove frame */
+  background: transparent;
+  border: none;
   border-radius: 0;
-  box-shadow: none;                     /* remove heavy shadow */
-  padding: 8px 0 10px;                  /* reduce padding */
+  box-shadow: none;
+  padding: 8px 0 10px;
 }
 
-/* Title block */
 .title-block {
   display: flex;
   flex-direction: column;
@@ -77,28 +86,28 @@ body {
 .title {
   margin: 0;
   font-family: var(--serif);
-  font-size: 22px; /* smaller */
+  font-size: 22px;
   letter-spacing: 0.2px;
 }
 
 .subtitle {
   margin: 0;
   color: var(--muted);
-  font-size: 12.5px; /* slightly smaller */
+  font-size: 12.5px;
   line-height: 1.45;
 }
 
-/* Controls: treat as subtle toolbar */
+/* Controls: subtle toolbar */
 .controls {
   display: grid;
   grid-template-columns: 1.6fr 1fr 1fr;
-  gap: 10px;               /* tighter */
+  gap: 10px;
   align-items: end;
-  padding: 10px 12px;      /* add a light container */
-  background: rgba(255, 255, 255, 0.55);
+  padding: 10px 12px;
+  background: var(--toolbar-bg);
   border: 1px solid var(--border2);
   border-radius: var(--radius);
-  box-shadow: var(--header-shadow);
+  box-shadow: var(--toolbar-shadow);
 }
 
 .control label {
@@ -120,8 +129,8 @@ select {
   min-height: var(--control-h);
   padding: 8px 10px;
   border-radius: 10px;
-  border: 1px solid var(--border2); /* lighter border */
-  background: rgba(255, 255, 255, 0.8); /* less “boxed” */
+  border: 1px solid var(--border2);
+  background: rgba(255, 255, 255, 0.85);
   color: var(--ink);
   outline: none;
 }
@@ -140,12 +149,13 @@ select:focus-visible {
   min-height: var(--control-h);
   padding: 8px 12px;
   border-radius: 10px;
-  border: 1px solid var(--border2);          /* lighter */
-  background: rgba(255, 255, 255, 0.85);     /* calmer */
+  border: 1px solid var(--border2);
+  background: rgba(255, 255, 255, 0.9);
   color: var(--ink);
   cursor: pointer;
   user-select: none;
-  transition: background 120ms ease, border-color 120ms ease, transform 80ms ease;
+  transition: background 120ms ease, border-color 120ms ease,
+    transform 80ms ease;
 }
 
 .btn:hover {
@@ -167,7 +177,7 @@ select:focus-visible {
 .checks {
   display: flex;
   flex-direction: column;
-  gap: 8px; /* tighter */
+  gap: 8px;
   padding-bottom: 2px;
 }
 
@@ -176,7 +186,7 @@ select:focus-visible {
   align-items: center;
   gap: 10px;
   color: var(--ink);
-  font-size: 12.5px; /* slightly smaller */
+  font-size: 12.5px;
 }
 
 .checkbox input {
@@ -193,7 +203,7 @@ select:focus-visible {
   border-color: rgba(29, 78, 216, 0.55);
 }
 
-/* Main panel: this is the “page” */
+/* Main panel: the “page” */
 .main {
   margin-top: 12px;
   background: var(--paper);
@@ -213,47 +223,131 @@ select:focus-visible {
   line-height: 1.45;
 }
 
-/* Lesson image: smaller, centered, quieter */
+/* Image: default (mobile/stack) */
 .lesson-image {
   padding: 12px 16px 0;
-  background: transparent;
 }
 
 .lesson-image img {
   width: 100%;
-  max-width: var(--image-max);
-  margin: 0 auto;                 /* center */
+  max-width: 720px; /* keep stacked image reasonably large */
+  margin: 0 auto;
   display: block;
   border-radius: 10px;
   border: 1px solid var(--border2);
-  box-shadow: none;               /* remove dominance */
+  box-shadow: none;
 }
 
-/* Story */
+.sentence-audio-icon {
+  display: inline-flex !important; /* Flexbox to center the icon */
+  align-items: center !important; /* Vertical centering */
+  justify-content: center !important; /* Horizontal centering */
+  padding: 6px !important; /* Same padding as .sentence-cefr-label */
+  font-size: 14px !important; /* Icon size inside */
+  border-radius: 4px !important; /* Same rounded corners */
+  background-color: #f0f0f0 !important; /* Matches the default CEFR look */
+  color: #4f4f4f !important; /* Icon color */
+  user-select: none !important; /* Same no-selection behavior */
+  cursor: pointer !important;
+  width: auto !important; /* Clickable */
+  box-sizing: border-box !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15); /* soft shadow gives depth */
+  transition: background-color 0.2s ease, box-shadow 0.2s ease,
+    transform 0.1s ease;
+}
+
+.playbtn:hover {
+  background-color: #e0e0e0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* stronger shadow on hover */
+  transform: translateY(-1px); /* tiny lift */
+}
+
+/* Playback button */
+.playbtn {
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  border: 1px solid var(--border2);
+  background: rgba(255, 255, 255, 0.9);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  font-size: 14px;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.playbtn:hover {
+  background: #f3efe8;
+  border-color: rgba(17, 24, 39, 0.18);
+}
+
+.playbtn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.playbtn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 var(--focus-ring) var(--accentWash);
+  border-color: rgba(29, 78, 216, 0.55);
+}
+
+.playbtn.is-playing {
+  border-color: rgba(29, 78, 216, 0.35);
+  box-shadow: 0 0 0 2px rgba(29, 78, 216, 0.1);
+}
+
+/*
+  IMPORTANT FIX:
+  Use flex so the sentence takes full width when the play button is missing.
+  (Your previous grid reserved a 30px column even when no button existed.)
+*/
+.textrow {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.textrow .primary {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Story (default) */
 .story {
   padding: 18px 16px 20px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
 }
 
-/* Lines */
+/* Lines: remove rounded rectangles; use dashed separators */
 .line {
   display: grid;
   grid-template-columns: 44px 1fr;
   gap: 14px;
   align-items: start;
-  padding: 14px 14px;
-  border-radius: 12px;
-  border: 1px solid var(--border2);
-  background: #fff;
+  padding: 10px 0;
+  border: none;
+  background: transparent;
+  border-radius: 0;
+}
+
+/* dashed rule between sentences */
+.line + .line {
+  border-top: 1px dashed var(--dash);
+  margin-top: 6px;
+  padding-top: 16px;
 }
 
 .lineno {
   font-family: var(--mono);
   color: var(--muted2);
-  font-size: 12px;
-  padding-top: 4px;
+  font-size: 11.5px;
+  padding-top: 3px;
   text-align: right;
 }
 
@@ -261,24 +355,66 @@ select:focus-visible {
   max-width: var(--reading-width);
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
+/* Slightly smaller sentence text */
 .primary {
   font-family: var(--serif);
-  font-size: clamp(18px, 2vw, 22px);
+  font-size: clamp(17px, 1.9vw, 20px);
   line-height: 1.65;
-  letter-spacing: 0.1px;
+  letter-spacing: 0.06px;
   word-break: break-word;
 }
 
 .secondary {
   font-family: var(--sans);
-  font-size: clamp(14px, 1.5vw, 16px);
+  font-size: clamp(13.5px, 1.4vw, 15.5px);
   line-height: 1.6;
   color: var(--muted);
-  border-top: 1px solid var(--border2);
-  padding-top: 10px;
+  padding-top: 0;
+  border-top: none;
+}
+
+/* Desktop layout: image to the right of the first few lines */
+@media (min-width: 900px) {
+  .main {
+    display: grid;
+    grid-template-columns: var(--text-col) var(--image-col);
+    column-gap: 18px;
+  }
+
+  .meta {
+    grid-column: 1 / -1;
+  }
+
+  .lesson-image {
+    grid-column: 2;
+    grid-row: 2;
+    padding: 16px 16px 0 0;
+    align-self: start;
+  }
+
+  .lesson-image img {
+    max-width: var(--image-max); /* bigger than before */
+    margin: 0;
+    border-radius: 10px;
+  }
+
+  .story {
+    grid-column: 1;
+    grid-row: 2;
+    padding-right: 0;
+    padding-top: 16px;
+    display: grid;
+    grid-template-columns: 1fr;
+    row-gap: 0; /* separators handle rhythm */
+  }
+
+  /* first 4 lines beside image; 5+ spans full width */
+  .story .line:nth-child(n + 5) {
+    grid-column: 1 / -1;
+  }
 }
 
 /* Footer */
@@ -314,7 +450,7 @@ select:focus-visible {
   }
 
   .lesson-image img {
-    max-width: 100%; /* keep image fluid on mobile */
+    max-width: 100%;
   }
 }
 
@@ -341,12 +477,16 @@ select:focus-visible {
   .main {
     box-shadow: none;
     border-color: #ddd;
+    display: block;
   }
   .meta {
     background: #fff;
   }
-  .line {
-    border-color: #ddd;
+  .lesson-image {
+    padding: 0 16px 0;
+  }
+  .line + .line {
+    border-top: 1px dashed #bbb;
   }
   .secondary {
     color: #333;

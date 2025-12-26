@@ -1,21 +1,21 @@
-Lesson,Line,CEFR,English,Norwegian,Hebrew,Croatian,Japanese
-1,1,A1,It's morning.,Det er morgen.,זה בוקר.,Jutro je.,朝です。
-1,2,A1,The room is dark.,Rommet er mørkt.,החדר חשוך.,Soba je mračna.,部屋は暗いです。
-1,3,A1,The alarm clock rings.,Vekkerklokken ringer.,השעון המעורר מצלצל.,Budilica zvoni.,目覚まし時計が鳴ります。
-1,4,A1,I open my eyes.,Jeg åpner øynene mine.,אני פותח את העיניים.,Otvaram oči.,目を開けます。
-1,5,A1,The light is off.,Lyset er av.,האור כבוי.,Svjetlo je ugašeno.,電気は消えています。
-1,6,A1,I get up.,Jeg står opp.,אני קם.,Ustajem.,起きます。
-1,7,A1,The room is still dark.,Rommet er fortsatt mørkt.,החדר עדיין חשוך.,Soba je još mračna.,部屋はまだ暗いです。
-1,8,A1,I turn on the light.,Jeg slår på lyset.,אני מדליק את האור.,Palim svjetlo.,電気をつけます。
-1,9,A1,The room is bright.,Rommet er lyst.,החדר מואר.,Soba je svijetla.,部屋は明るいです。
-1,10,A1,The day starts.,Dagen starter.,היום מתחיל.,Dan počinje.,一日が始まります。
-2,1,A1,I go to the bathroom.,Jeg går på badet.,אני הולך לחדר האמבטיה.,Idem u kupaonicu.,トイレに行きます。
-2,2,A1,The room is bright.,Rommet er lyst.,החדר מואר.,Soba je svijetla.,部屋は明るいです。
-2,3,A1,There's a sink.,Det er en vask.,יש כיור.,Ima umivaonik.,洗面台があります。
-2,4,A1,I turn on the water.,Jeg skrur på vannet.,אני פותח את המים.,Puštam vodu.,水を出します。
-2,5,A1,The water is cold.,Vannet er kaldt.,המים קרים.,Voda je hladna.,水は冷たいです。
-2,6,A1,I wait.,Jeg venter.,אני מחכה.,Čekam.,待ちます。
-2,7,A1,The water is still cold.,Vannet er fortsatt kaldt.,המים עדיין קרים.,Voda je još uvijek hladna.,水はまだ冷たいです。
-2,8,A1,I turn on the hot water.,Jeg skrur på varmtvannet.,אני פותח את המים החמים.,Puštam toplu vodu.,お湯を出します。
-2,9,A1,The water is warm.,Vannet er varmt.,המים חמימים.,Voda je topla.,水は温かいです。
-2,10,A1,I brush my teeth.,Jeg pusser tennene.,אני מצחצח שיניים.,Perem zube.,歯を磨きます。
+Lesson,Line,CEFR,Croatian,English,Hebrew,Japanese,Norwegian
+1,1,A1,Jutro je.,It's morning.,זה בוקר.,朝です。,Det er morgen.
+1,2,A1,Soba je mračna.,The room is dark.,החדר חשוך.,部屋は暗いです。,Rommet er mørkt.
+1,3,A1,Budilica zvoni.,The alarm clock rings.,השעון המעורר מצלצל.,目覚まし時計が鳴ります。,Vekkerklokken ringer.
+1,4,A1,Otvaram oči.,I open my eyes.,אני פותח את העיניים.,目を開けます。,Jeg åpner øynene mine.
+1,5,A1,Svjetlo je ugašeno.,The light is off.,האור כבוי.,電気は消えています。,Lyset er av.
+1,6,A1,Ustajem.,I get up.,אני קם.,起きます。,Jeg står opp.
+1,7,A1,Soba je još mračna.,The room is still dark.,החדר עדיין חשוך.,部屋はまだ暗いです。,Rommet er fortsatt mørkt.
+1,8,A1,Palim svjetlo.,I turn on the light.,אני מדליק את האור.,電気をつけます。,Jeg slår på lyset.
+1,9,A1,Soba je svijetla.,The room is bright.,החדר מואר.,部屋は明るいです。,Rommet er lyst.
+1,10,A1,Dan počinje.,The day starts.,היום מתחיל.,一日が始まります。,Dagen starter.
+2,1,A1,Idem u kupaonicu.,I go to the bathroom.,אני הולך לחדר האמבטיה.,トイレに行きます。,Jeg går på badet.
+2,2,A1,Soba je svijetla.,The room is bright.,החדר מואר.,部屋は明るいです。,Rommet er lyst.
+2,3,A1,Ima umivaonik.,There's a sink.,יש כיור.,洗面台があります。,Det er en vask.
+2,4,A1,Puštam vodu.,I turn on the water.,אני פותח את המים.,水を出します。,Jeg skrur på vannet.
+2,5,A1,Voda je hladna.,The water is cold.,המים קרים.,水は冷たいです。,Vannet er kaldt.
+2,6,A1,Čekam.,I wait.,אני מחכה.,待ちます。,Jeg venter.
+2,7,A1,Voda je još uvijek hladna.,The water is still cold.,המים עדיין קרים.,水はまだ冷たいです。,Vannet er fortsatt kaldt.
+2,8,A1,Puštam toplu vodu.,I turn on the hot water.,אני פותח את המים החמים.,お湯を出します。,Jeg skrur på varmtvannet.
+2,9,A1,Voda je topla.,The water is warm.,המים חמימים.,水は温かいです。,Vannet er varmt.
+2,10,A1,Perem zube.,I brush my teeth.,אני מצחצח שיניים.,歯を磨きます。,Jeg pusser tennene.

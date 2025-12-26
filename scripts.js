@@ -14,6 +14,194 @@ This is needed because most browsers block fetch() for local file:// pages.
 
 const CSV_PATH = "Readable.csv";
 
+const AUDIO_DIR = "Audio";
+const AUDIO_EXT = "m4a";
+
+const IMAGES_DIR = "Images";
+const IMAGE_EXT = "png";
+
+// Keep only one audio playing at a time
+let currentlyPlaying = { audio: null, btn: null };
+
+// Cache audio objects (prevents repeated network overhead)
+const audioCache = new Map();
+
+// Cache "does this audio exist?" results so we only check once
+const audioExistsCache = new Map();
+
+/* -------------------- Audio helpers -------------------- */
+
+function buildAudioUrl(language, sentenceText) {
+  // IMPORTANT: sentenceText already includes punctuation like ".".
+  // Per your convention, filenames are "[Sentence.].m4a" so we append ".m4a"
+  // -> if sentence ends with ".", you get "..m4a", exactly as desired.
+  const filename = `${sentenceText}.${AUDIO_EXT}`;
+  const path = `${AUDIO_DIR}/${language}/${filename}`;
+
+  // Encode each segment so spaces, Hebrew/Japanese, etc. work in URLs.
+  // Keep slashes unencoded.
+  return path.split("/").map(encodeURIComponent).join("/");
+}
+
+async function audioExists(url) {
+  if (audioExistsCache.has(url)) return audioExistsCache.get(url);
+
+  try {
+    const res = await fetch(url, { method: "HEAD", cache: "no-store" });
+    const ok = res.ok;
+    audioExistsCache.set(url, ok);
+    return ok;
+  } catch {
+    audioExistsCache.set(url, false);
+    return false;
+  }
+}
+
+function getOrCreateAudio(url) {
+  if (audioCache.has(url)) return audioCache.get(url);
+  const a = new Audio(url);
+  a.preload = "none";
+  audioCache.set(url, a);
+  return a;
+}
+
+function stopCurrentAudio() {
+  if (currentlyPlaying.audio) {
+    currentlyPlaying.audio.pause();
+    currentlyPlaying.audio.currentTime = 0;
+  }
+  if (currentlyPlaying.btn) {
+    currentlyPlaying.btn.classList.remove("is-playing");
+    currentlyPlaying.btn.textContent = "▶";
+  }
+  currentlyPlaying = { audio: null, btn: null };
+}
+
+function attachAudioButton(playBtn, language, sentence) {
+  const url = buildAudioUrl(language, sentence);
+  const audio = getOrCreateAudio(url);
+
+  // Wire audio-level listeners once per cached audio object
+  if (!audio.__wired) {
+    audio.addEventListener("ended", () => {
+      if (currentlyPlaying.audio === audio) stopCurrentAudio();
+    });
+
+    audio.addEventListener("error", () => {
+      audio.__missing = true;
+      if (currentlyPlaying.audio === audio) stopCurrentAudio();
+    });
+
+    audio.__wired = true;
+  }
+
+  playBtn.addEventListener("click", async () => {
+    // If lesson playback is running, stop it and switch to manual playback
+    if (lessonPlayback.running) stopLessonPlayback();
+
+    // Stop other audio if a different sentence is playing
+    if (currentlyPlaying.audio && currentlyPlaying.audio !== audio) {
+      stopCurrentAudio();
+    }
+
+    // Toggle stop if this exact audio is playing
+    if (currentlyPlaying.audio === audio && !audio.paused) {
+      stopCurrentAudio();
+      return;
+    }
+
+    stopCurrentAudio();
+
+    playBtn.classList.add("is-playing");
+    playBtn.textContent = "⏸";
+    currentlyPlaying = { audio, btn: playBtn };
+
+    try {
+      await audio.play();
+    } catch {
+      audio.__missing = true;
+      stopCurrentAudio();
+    }
+  });
+}
+
+/* -------------------- Lesson playback -------------------- */
+
+let lessonPlayback = {
+  running: false,
+  token: 0,
+  btn: null,
+};
+
+function sleep(ms) {
+  return new Promise((r) => setTimeout(r, ms));
+}
+
+function stopLessonPlayback() {
+  lessonPlayback.token++; // cancels any in-flight loop
+  lessonPlayback.running = false;
+
+  stopCurrentAudio();
+
+  if (lessonPlayback.btn) {
+    lessonPlayback.btn.textContent = "Play lesson";
+    lessonPlayback.btn.classList.remove("is-playing");
+  }
+}
+
+async function playOne(url, sentenceBtn) {
+  const audio = getOrCreateAudio(url);
+
+  // Stop any other audio + reset old UI
+  stopCurrentAudio();
+
+  if (sentenceBtn) {
+    sentenceBtn.classList.add("is-playing");
+    sentenceBtn.textContent = "⏸";
+  }
+
+  currentlyPlaying = { audio, btn: sentenceBtn };
+  audio.currentTime = 0;
+
+  return new Promise(async (resolve, reject) => {
+    const onEnded = () => cleanup(resolve);
+    const onError = () => cleanup(() => reject(new Error("missing")));
+
+    function cleanup(done) {
+      audio.removeEventListener("ended", onEnded);
+      audio.removeEventListener("error", onError);
+      done();
+    }
+
+    audio.addEventListener("ended", onEnded);
+    audio.addEventListener("error", onError);
+
+    try {
+      await audio.play();
+    } catch (e) {
+      cleanup(() => reject(e));
+    }
+  });
+}
+
+async function playLessonInOrder(urls, btns, token) {
+  for (let i = 0; i < urls.length; i++) {
+    if (lessonPlayback.token !== token) return;
+
+    await playOne(urls[i], btns[i] || null);
+
+    // End of sentence will call stopCurrentAudio() via "ended" listener,
+    // which also resets the active sentence button UI.
+
+    if (i < urls.length - 1) {
+      if (lessonPlayback.token !== token) return;
+      await sleep(1000); // 1-second pause between sentences
+    }
+  }
+}
+
+/* -------------------- DOM + state -------------------- */
+
 const els = {
   lessonSelect: document.getElementById("lessonSelect"),
   languageSelect: document.getElementById("languageSelect"),
@@ -35,29 +223,29 @@ const STORAGE_KEYS = {
 };
 
 let model = {
-  lessons: [], // [{ lessonId, cefr, lines: [{lineNo, texts:{...}}]}]
-  lessonIds: [], // ["1", "2", ...]
-  languages: [], // ["English", "Norwegian", ...]
+  lessons: [],
+  lessonIds: [],
+  languages: [],
   currentLessonId: null,
   currentLanguage: null,
   showEnglish: false,
   showLineNumbers: false,
 };
 
-const IMAGES_DIR = "Images";
-const IMAGE_EXT = "png";
+// Used to prevent async button checks from mutating an old render
+let renderToken = 0;
+
+/* -------------------- Images -------------------- */
 
 function updateLessonImage(lessonId) {
   if (!els.lessonImageWrap || !els.lessonImage) return;
 
   const src = `${IMAGES_DIR}/Lesson ${lessonId}.${IMAGE_EXT}`;
 
-  // Hide until we know it loads
   els.lessonImageWrap.style.display = "none";
   els.lessonImage.removeAttribute("src");
   els.lessonImage.alt = "";
 
-  // Try to load; if it fails, keep hidden
   const img = new Image();
   img.onload = () => {
     els.lessonImage.src = src;
@@ -70,6 +258,8 @@ function updateLessonImage(lessonId) {
   img.src = src;
 }
 
+/* -------------------- Init -------------------- */
+
 init();
 
 async function init() {
@@ -81,6 +271,7 @@ async function init() {
     const rows = parseCSV(csvText);
     buildModel(rows);
     initializeUIFromModel();
+    stopLessonPlayback();
     render();
   } catch (err) {
     console.error(err);
@@ -127,12 +318,14 @@ function wireUI() {
   els.lessonSelect.addEventListener("change", () => {
     model.currentLessonId = els.lessonSelect.value;
     persistPreferences();
+    stopLessonPlayback();
     render();
   });
 
   els.languageSelect.addEventListener("change", () => {
     model.currentLanguage = els.languageSelect.value;
     persistPreferences();
+    stopLessonPlayback();
     render();
   });
 
@@ -142,6 +335,7 @@ function wireUI() {
       model.currentLessonId = model.lessonIds[idx - 1];
       els.lessonSelect.value = model.currentLessonId;
       persistPreferences();
+      stopLessonPlayback();
       render();
     }
   });
@@ -152,6 +346,7 @@ function wireUI() {
       model.currentLessonId = model.lessonIds[idx + 1];
       els.lessonSelect.value = model.currentLessonId;
       persistPreferences();
+      stopLessonPlayback();
       render();
     }
   });
@@ -159,21 +354,24 @@ function wireUI() {
   els.showEnglishToggle.addEventListener("change", () => {
     model.showEnglish = els.showEnglishToggle.checked;
     persistPreferences();
+    stopLessonPlayback();
     render();
   });
 
   els.showLineNumbersToggle.addEventListener("change", () => {
     model.showLineNumbers = els.showLineNumbersToggle.checked;
     persistPreferences();
+    stopLessonPlayback();
     render();
   });
 
-  // Keyboard navigation: left/right for prev/next lesson
   window.addEventListener("keydown", (e) => {
     if (e.key === "ArrowLeft") els.prevLessonBtn.click();
     if (e.key === "ArrowRight") els.nextLessonBtn.click();
   });
 }
+
+/* -------------------- Fetch -------------------- */
 
 async function fetchText(path) {
   const res = await fetch(path, { cache: "no-store" });
@@ -181,12 +379,8 @@ async function fetchText(path) {
   return await res.text();
 }
 
-/**
- * Robust-enough CSV parser for:
- * - comma separated values
- * - quoted fields with commas
- * - double quotes inside quoted fields ("")
- */
+/* -------------------- CSV parsing -------------------- */
+
 function parseCSV(text) {
   const lines = text
     .replace(/\r\n/g, "\n")
@@ -248,21 +442,22 @@ function parseCSVLine(line) {
   return out;
 }
 
+/* -------------------- Model -------------------- */
+
 function buildModel(rows) {
   if (rows.length === 0) throw new Error("CSV contains no rows.");
 
-  // Identify language columns: everything except Lesson, Line, CEFR
   const allCols = Object.keys(rows[0]);
   const languageCols = allCols.filter(
     (c) => !["Lesson", "Line", "CEFR"].includes(c)
   );
 
-  if (languageCols.length === 0)
+  if (languageCols.length === 0) {
     throw new Error(
       "No language columns found (expected columns besides Lesson/Line/CEFR)."
     );
+  }
 
-  // Group by lesson
   const byLesson = new Map();
 
   for (const r of rows) {
@@ -283,24 +478,13 @@ function buildModel(rows) {
     byLesson.get(lessonId).lines.push({ lineNo, texts });
   }
 
-  // Sort lessons numerically if possible
   const lessonIds = Array.from(byLesson.keys()).sort(
     (a, b) => Number(a) - Number(b) || a.localeCompare(b)
   );
 
-  // Sort lines within each lesson
   const lessons = lessonIds.map((id) => {
     const lesson = byLesson.get(id);
     lesson.lines.sort((x, y) => x.lineNo - y.lineNo);
-    // If CEFR differs across lines, keep the first non-empty; (your CSV has it per row but consistent)
-    if (!lesson.cefr) {
-      for (const ln of lesson.lines) {
-        if (ln.cefr) {
-          lesson.cefr = ln.cefr;
-          break;
-        }
-      }
-    }
     return lesson;
   });
 
@@ -308,7 +492,6 @@ function buildModel(rows) {
   model.lessonIds = lessonIds;
   model.languages = languageCols;
 
-  // Defaults if no saved prefs
   if (
     !model.currentLessonId ||
     !model.lessonIds.includes(model.currentLessonId)
@@ -316,7 +499,6 @@ function buildModel(rows) {
     model.currentLessonId = model.lessonIds[0];
   }
 
-  // Prefer non-English language if saved; else English if exists; else first language col.
   if (
     !model.currentLanguage ||
     !model.languages.includes(model.currentLanguage)
@@ -328,7 +510,6 @@ function buildModel(rows) {
 }
 
 function initializeUIFromModel() {
-  // Lesson select
   els.lessonSelect.innerHTML = "";
   for (const id of model.lessonIds) {
     const opt = document.createElement("option");
@@ -338,7 +519,6 @@ function initializeUIFromModel() {
   }
   els.lessonSelect.value = model.currentLessonId;
 
-  // Language select
   els.languageSelect.innerHTML = "";
   for (const lang of model.languages) {
     const opt = document.createElement("option");
@@ -348,14 +528,18 @@ function initializeUIFromModel() {
   }
   els.languageSelect.value = model.currentLanguage;
 
-  // Toggles
   els.showEnglishToggle.checked = model.showEnglish;
   els.showLineNumbersToggle.checked = model.showLineNumbers;
 
   persistPreferences();
 }
 
+/* -------------------- Render -------------------- */
+
 function render() {
+  renderToken++;
+  const myToken = renderToken;
+
   const lesson = model.lessons.find(
     (l) => l.lessonId === model.currentLessonId
   );
@@ -376,7 +560,17 @@ function render() {
 
   els.storyContainer.innerHTML = "";
 
-  for (const line of lesson.lines) {
+  // Always reserve the TOP slot for the Play lesson button (may remain empty)
+  const playLessonSlot = document.createElement("div");
+  playLessonSlot.className = "play-lesson-slot";
+  els.storyContainer.appendChild(playLessonSlot);
+
+  // Prepare per-line bookkeeping so lesson playback can activate the same buttons
+  const sentenceUrls = [];
+  const sentenceBtns = new Array(lesson.lines.length).fill(null);
+
+  // Render lines immediately; sentence buttons appear only after HEAD confirms
+  lesson.lines.forEach((line, i) => {
     const lineEl = document.createElement("div");
     lineEl.className = "line";
 
@@ -390,10 +584,23 @@ function render() {
     const tb = document.createElement("div");
     tb.className = "textblock";
 
+    const sentence = (line.texts[model.currentLanguage] || "").trim();
+
+    // Row: [reserved button space] [sentence text]
+    const textRow = document.createElement("div");
+    textRow.className = "textrow";
+
+    // Always reserve a 30x30 slot so text alignment never shifts
+    const spacer = document.createElement("div");
+    spacer.className = "playbtn-spacer";
+    textRow.appendChild(spacer);
+
     const primary = document.createElement("div");
     primary.className = "primary";
-    primary.textContent = line.texts[model.currentLanguage] || "";
-    tb.appendChild(primary);
+    primary.textContent = sentence;
+    textRow.appendChild(primary);
+
+    tb.appendChild(textRow);
 
     if (
       model.showEnglish &&
@@ -408,5 +615,81 @@ function render() {
 
     lineEl.appendChild(tb);
     els.storyContainer.appendChild(lineEl);
-  }
+
+    // Track URL for lesson playback + existence checks
+    if (!sentence) {
+      sentenceUrls.push(null);
+      return;
+    }
+
+    const url = buildAudioUrl(model.currentLanguage, sentence);
+    sentenceUrls.push(url);
+
+    // Add sentence play button only if audio exists (async)
+    audioExists(url).then((exists) => {
+      if (renderToken !== myToken) return;
+      if (!exists) return;
+
+      const playBtn = document.createElement("button");
+      playBtn.className = "playbtn";
+      playBtn.type = "button";
+      playBtn.textContent = "▶";
+
+      spacer.replaceWith(playBtn);
+      sentenceBtns[i] = playBtn;
+
+      attachAudioButton(playBtn, model.currentLanguage, sentence);
+    });
+  });
+
+  // Decide whether to show the Play lesson button:
+  // - only if every line has sentence text
+  // - and every sentence has audio
+  (async () => {
+    const tokenAtStart = myToken;
+
+    if (sentenceUrls.some((u) => !u)) return;
+
+    const results = await Promise.all(sentenceUrls.map((u) => audioExists(u)));
+    if (renderToken !== tokenAtStart) return;
+    if (results.some((x) => !x)) return;
+
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "btn";
+    btn.textContent = "Play lesson";
+
+    lessonPlayback.btn = btn;
+
+    btn.addEventListener("click", async () => {
+      if (lessonPlayback.running) {
+        stopLessonPlayback();
+        return;
+      }
+
+      lessonPlayback.running = true;
+      const runToken = ++lessonPlayback.token;
+
+      btn.textContent = "Stop";
+      btn.classList.add("is-playing");
+
+      try {
+        // During playback, activate each sentence button in order.
+        await playLessonInOrder(sentenceUrls, sentenceBtns, runToken);
+      } catch {
+        // Stop cleanly on any failure
+      } finally {
+        if (lessonPlayback.token === runToken) {
+          lessonPlayback.running = false;
+          btn.textContent = "Play lesson";
+          btn.classList.remove("is-playing");
+          stopCurrentAudio();
+        }
+      }
+    });
+
+    // Put it ABOVE all the sentences
+    playLessonSlot.innerHTML = "";
+    playLessonSlot.appendChild(btn);
+  })();
 }
